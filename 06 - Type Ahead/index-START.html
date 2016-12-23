@@ -6,17 +6,48 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
+    <label for="search">Search by city or state</label>
+    <input id="search" type="text" class="search" placeholder="City or State">
+    <ul id="suggestions" class="suggestions">
       <li>Filter for a city</li>
       <li>or a state</li>
     </ul>
   </form>
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+const cities = [];
+const search = document.getElementById('search')
+const suggestions = document.getElementById('suggestions')
 
+fetch(endpoint)
+  .then(res => res.json())
+  .then(data => cities.push(...data))
+
+search.addEventListener('input', displayMatches)
+
+function findMatches(word, cities) {
+  const regex = new RegExp(word, 'gi')
+  return cities.filter(({city, state}) => {
+    return city.match(regex) || state.match(regex)
+  });
+}
+
+function displayMatches() {
+  const results = findMatches(this.value, cities)
+  const hlRegex = new RegExp(this.value, 'gi')
+  const resultHtml = results.map(({city, state, population}) => {
+    city = city.replace(hlRegex, `<span class="hl">${this.value}</span>`)
+    state = state.replace(hlRegex, `<span class="hl">${this.value}</span>`)
+    return `
+      <li>
+        <span class="name">${city}, ${state}</span>
+        <span class="population">${Number(population).toLocaleString()}</span>
+      </li>
+    `
+  }).join('')
+  suggestions.innerHTML = resultHtml
+}
 </script>
   </body>
 </html>
