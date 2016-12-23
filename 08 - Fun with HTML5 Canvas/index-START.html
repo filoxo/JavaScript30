@@ -3,10 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <title>HTML5 Canvas</title>
+  <style>
+    #draw {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+const canvas = document.getElementById('draw')
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+const ctx = canvas.getContext('2d')
+ctx.lineJoin = 'round'
+ctx.lineCap = 'round'
+
+let isDrawing = false,
+    lastX = 0,
+    lastY = 0,
+    hue = 0,
+    direction = true
+
+function draw({offsetX, offsetY}) {
+  if (!isDrawing) return
+
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`
+  
+  ctx.beginPath()
+  ctx.moveTo(lastX, lastY)
+  ctx.lineTo(offsetX, offsetY)
+  ctx.stroke()
+
+  lastX = offsetX
+  lastY = offsetY
+  hue = hue % 360 + 1
+  if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction
+  }
+  direction ? ctx.lineWidth++ : ctx.lineWidth--
+}
+
+document.addEventListener('mousemove', draw)
+document.addEventListener('mousedown', ({offsetX, offsetY}) => {
+  [lastX, lastY] = [offsetX, offsetY]
+  isDrawing = true
+})
+document.addEventListener('mouseup', () => isDrawing = false)
+document.addEventListener('mouseout', () => isDrawing = false)
 </script>
 
 <style>
