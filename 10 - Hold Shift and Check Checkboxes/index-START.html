@@ -40,7 +40,7 @@
       margin:20px;
     }
 
-    p {
+    label {
       margin:0;
       padding:20px;
       transition:background 0.2s;
@@ -66,44 +66,58 @@
   -->
   <div class="inbox">
     <div class="item">
-      <input type="checkbox">
-      <p>This is an inbox layout.</p>
+      <input type="checkbox" id="0">
+      <label for="0">This is an inbox layout.</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Check one item</p>
+      <input type="checkbox" id="1">
+      <label for="1">Check one item</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Hold down your Shift key</p>
+      <input type="checkbox" id="2">
+      <label for="2">Hold down your Shift key</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Check a lower item</p>
+      <input type="checkbox" id="3">
+      <label for="3">Check a lower item</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Everything inbetween should also be set to checked</p>
+      <input type="checkbox" id="4">
+      <label for="4">Everything inbetween should also be set to checked</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Try do it with out any libraries</p>
+      <input type="checkbox" id="5">
+      <label for="5">Try do it with out any libraries</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Just regular JavaScript</p>
+      <input type="checkbox" id="6">
+      <label for="6">Just regular JavaScript</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Good Luck!</p>
+      <input type="checkbox" id="7">
+      <label for="7">Good Luck!</label>
     </div>
     <div class="item">
-      <input type="checkbox">
-      <p>Don't forget to tweet your result!</p>
+      <input type="checkbox" id="8">
+      <label for="8">Don't forget to tweet your result!</label>
     </div>
   </div>
 
 <script>
+  const items = [...document.querySelectorAll('.item > input')]
+  let lastSelectIndex = -1;
+  items.forEach(item => item.addEventListener('click', ({srcElement, shiftKey}) => {
+    if(shiftKey && lastSelectIndex !== -1) {
+      const currentSelectIndex = items.indexOf(srcElement)
+      const subItems = currentSelectIndex > lastSelectIndex ? 
+                        items.slice(lastSelectIndex, currentSelectIndex) : 
+                        items.slice(currentSelectIndex, lastSelectIndex)
+      const shouldCheck = items[lastSelectIndex].checked
+      subItems.forEach(item => item.checked = shouldCheck)
+    } else {
+      lastSelectIndex = items.indexOf(srcElement)
+    }
+  }))
 </script>
 </body>
 </html>
